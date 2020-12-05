@@ -1,20 +1,6 @@
---[[
-
-			Module made by Fake_t, Penlight* by stevedonovan (and others), Edited Lexer** by boatbomber and sleitnick.
-			
-			*  https://github.com/lunarmodules/Penlight (Lexer is in Lua/pl)
-			** https://www.roblox.com/library/2405013009/Lexer  (All of the penlight contributors are in this module)
-			
-			Usage:
-			
-				require(thismodule).SetTextBox(textbox, themetable) (themetable can be empty)
-]]
-
-
-
 local module = {}
 
-local lexer = loadstring(game:GetObjects("rbxassetid://2405013009")[1].Source)() --Can't do require(asset id) because u can't require asset from client
+local lexer = loadstring(game:GetObjects("rbxassetid://2405013009")[1].Source)()
 local LineCountScale = 0
 local LineCountOffset = 15
 local TextToCounterGapOffset = 5
