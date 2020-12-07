@@ -1,3 +1,5 @@
+local module = {}
+
 local template = [[local SettingList = %s
 
 local ModifierList = %s
