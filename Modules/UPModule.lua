@@ -22,4 +22,12 @@ end
 
 return up]]
 
-return template
+module.GetSaveTemplate = function()
+    return template
+end
+
+module.GetVersion = function()
+    return "2.1"
+end
+
+return module
