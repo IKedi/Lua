@@ -5,10 +5,10 @@ local LineCountScale = 0
 local LineCountOffset = 15
 local TextToCounterGapOffset = 5
 
-module.SetTextBox = function(textbox, theme)
-	if not textbox or not textbox:IsA("TextBox") then return;end
+module.SetTextBox = function(TextBox, theme)
+	if not TextBox or not TextBox:IsA("TextBox") then return;end
 	
-	if not theme or type(theme) ~= 'table' then
+	if theme == nil or type(theme) ~= 'table' then
 		theme = {
 			builtin = "132, 214, 247",
 			keyword = "248, 109, 124",
@@ -20,67 +20,107 @@ module.SetTextBox = function(textbox, theme)
 	
 	local lastxsize = 0
 	local lastysize = 0
-	local background = tostring(math.floor(textbox.BackgroundColor3.R * 255))..", "..tostring(math.floor(textbox.BackgroundColor3.R * 255))..", "..tostring(math.floor(textbox.BackgroundColor3.R * 255))
-
-	local LexerScroll = Instance.new("ScrollingFrame", textbox.Parent)
-	local LexerLabel = Instance.new("TextLabel", textbox)
-	local LinesLabel = Instance.new("TextLabel", textbox)
+	local background = tostring(math.floor(TextBox.BackgroundColor3.R * 255))..", "..tostring(math.floor(TextBox.BackgroundColor3.R * 255))..", "..tostring(math.floor(TextBox.BackgroundColor3.R * 255))
 	
-	LexerScroll.Size = textbox.Size
-	LexerScroll.Position = textbox.Position
+	local Folder = Instance.new("Folder", TextBox.Parent)
+	local LexerScroll = Instance.new("ScrollingFrame", Folder)
+	local LineCounterHolder = Instance.new("ScrollingFrame", Folder)
+	local LexerLabel = Instance.new("TextLabel", TextBox)
+	local LinesLabel = Instance.new("TextLabel", LineCounterHolder)
+	
+	Folder.Name = TextBox.Name
+	
+	LexerScroll.Name = "Scroller"
+	LexerScroll.Size = UDim2.new(TextBox.Size.X.Scale - LineCountScale, TextBox.Size.X.Offset - LineCountOffset, TextBox.Size.Y.Scale, TextBox.Size.Y.Offset)
+	LexerScroll.Position = UDim2.new(TextBox.Position.X.Scale + LineCountScale, TextBox.Position.X.Offset + LineCountOffset, TextBox.Position.Y.Scale, TextBox.Position.Y.Offset)
 	LexerScroll.CanvasSize = UDim2.new(0, 0, 0, 0)
-	LexerScroll.BackgroundColor3 = textbox.BackgroundColor3
-	LexerScroll.BorderColor3 = textbox.BorderColor3
-	LexerScroll.ScrollBarImageColor3 = textbox.TextColor3
+	LexerScroll.BackgroundColor3 = TextBox.BackgroundColor3
+	LexerScroll.BorderColor3 = TextBox.BorderColor3
+	LexerScroll.ScrollBarImageColor3 = TextBox.TextColor3
 	
-	textbox.Size = UDim2.new(textbox.Size.X.Scale - LineCountScale, textbox.Size.X.Offset + LineCountOffset, textbox.Size.Y.Scale, textbox.Size.Y.Offset)
-	textbox.Position = UDim2.new(textbox.Position.X.Scale + LineCountScale, textbox.Position.X.Offset + LineCountOffset, textbox.Position.Y.Scale, textbox.Position.Y.Offset)
+	LineCounterHolder.Name = "Scroller"
+	LineCounterHolder.Size = UDim2.new(LineCountScale, LineCountOffset, TextBox.Size.Y.Scale, TextBox.Size.Y.Offset)
+	LineCounterHolder.Position = TextBox.Position
+	LineCounterHolder.CanvasSize = UDim2.new(0, 0, 0, 0)
+	LineCounterHolder.BackgroundColor3 = TextBox.BackgroundColor3
+	LineCounterHolder.BorderColor3 = TextBox.BorderColor3
+	LineCounterHolder.ScrollBarThickness = 0 --Hides the scroll wheel
+	LineCounterHolder.LayoutOrder = 1
+	LineCounterHolder.ScrollingEnabled = false
 	
-	textbox.Parent = LexerScroll
-	textbox.BackgroundTransparency = 1
-	textbox.Position = UDim2.new(LineCountScale, LineCountOffset + TextToCounterGapOffset, 0, 0)
-	textbox.Size = UDim2.new(100, 0, 100, 0)
-	textbox.MultiLine = true
-	textbox.ClearTextOnFocus = false
-	textbox.Font = Enum.Font.Code
-	textbox.TextWrapped = false
-	textbox.TextScaled = false
-	textbox.TextXAlignment = Enum.TextXAlignment.Left
-	textbox.TextYAlignment = Enum.TextYAlignment.Top
+	TextBox.Parent = LexerScroll
+	TextBox.Size = UDim2.new(100, 0, 100, 0)
+	TextBox.Position = UDim2.new(0, 5, 0, 0)
+	TextBox.BackgroundTransparency = 1
+	TextBox.MultiLine = true
+	TextBox.ClearTextOnFocus = false
+	TextBox.Font = Enum.Font.Code
+	TextBox.TextWrapped = false
+	TextBox.TextScaled = false
+	TextBox.TextXAlignment = Enum.TextXAlignment.Left
+	TextBox.TextYAlignment = Enum.TextYAlignment.Top
 	
 	LexerLabel.Name = "Visual"
-	LexerLabel.Position = UDim2.new(0, 0, 0, 0)
-	LexerLabel.Size = textbox.Size
+	LexerLabel.Size = TextBox.Size
 	LexerLabel.BackgroundTransparency = 1
-	LexerLabel.Font = textbox.Font
-	LexerLabel.TextColor3 = textbox.TextColor3
-	LexerLabel.TextSize = textbox.TextSize
-	LexerLabel.TextStrokeColor3 = textbox.BackgroundColor3
+	LexerLabel.Font = TextBox.Font
+	LexerLabel.TextColor3 = TextBox.TextColor3
+	LexerLabel.TextSize = TextBox.TextSize
+	LexerLabel.TextStrokeColor3 = TextBox.BackgroundColor3
 	LexerLabel.TextStrokeTransparency = 0
 	LexerLabel.TextXAlignment = Enum.TextXAlignment.Left
 	LexerLabel.TextYAlignment = Enum.TextYAlignment.Top
 	LexerLabel.RichText = true
 	
 	LinesLabel.Name = "LineCount"
-	LinesLabel.Size = UDim2.new(LineCountScale, LineCountOffset, textbox.Size.Y.Scale, textbox.Size.Y.Offset)
-	LinesLabel.Position = UDim2.new(-LineCountScale, -(LineCountOffset + TextToCounterGapOffset), 0, 0)
-	LinesLabel.BackgroundColor3 = textbox.BackgroundColor3
-	LinesLabel.BorderColor3 = textbox.BorderColor3
+	LinesLabel.Size = UDim2.new(1, 0, TextBox.Size.Y.Scale, TextBox.Size.Y.Offset)
+	LinesLabel.Position = UDim2.new(0, 0, 0, 0)
+	LinesLabel.BackgroundColor3 = TextBox.BackgroundColor3
+	LinesLabel.BorderColor3 = TextBox.BorderColor3
 	LinesLabel.Font = Enum.Font.Code
 	LinesLabel.Text = "1"
-	LinesLabel.TextColor3 = textbox.TextColor3
-	LinesLabel.TextSize = textbox.TextSize
+	LinesLabel.TextColor3 = TextBox.TextColor3
+	LinesLabel.TextSize = TextBox.TextSize
 	LinesLabel.TextYAlignment = Enum.TextYAlignment.Top
 	
+	local function updatescrolls()
+		if LinesLabel then
+			LinesLabel.Text = ""
+
+			for i = 1, LexerLabel.TextBounds.Y / LexerLabel.TextSize do
+				LinesLabel.Text = LinesLabel.Text..tostring(i)
+
+				if i ~= LexerLabel.TextBounds.Y / LexerLabel.TextSize then
+					LinesLabel.Text = LinesLabel.Text.."\n"
+				end
+			end
+		end
+
+		LexerScroll.CanvasSize = UDim2.new(LineCountScale, TextBox.TextBounds.X + LineCountOffset + TextToCounterGapOffset, 0, TextBox.TextBounds.Y)
+		LineCounterHolder.CanvasSize = UDim2.new(0, 0, LexerScroll.CanvasSize.Y.Scale, LexerScroll.CanvasSize.Y.Offset)
+		LineCounterHolder.CanvasPosition = Vector2.new(0, LexerScroll.CanvasPosition.Y)
+
+		if LexerScroll.CanvasSize.X.Offset ~= lastxsize then
+			LexerScroll.CanvasPosition = Vector2.new(LexerScroll.CanvasSize.X.Offset, LexerScroll.CanvasPosition.Y)
+		end
+
+		if LexerScroll.CanvasSize.Y.Offset ~= lastysize then
+			LexerScroll.CanvasPosition = Vector2.new(LexerScroll.CanvasPosition.X, LexerScroll.CanvasSize.Y.Offset)
+		end
+
+		lastxsize = LexerScroll.CanvasSize.X.Offset
+		lastysize = LexerScroll.CanvasSize.Y.Offset
+	end
+	
 	local function highlight()
-		local write = "\n<font color=\"rgb("..background..")\"></font>"
+		local write = "\n<font color=\"rgb("..background..")\">‎</font>" --RichText doesn't allow two empty lines (empty char)
 		
-		if textbox.Text:find('\t') then
-			textbox.Text = textbox.Text:gsub("\t", "    ")
-			textbox.CursorPosition += 3
+		if TextBox.Text:find('\t') then
+			TextBox.Text = TextBox.Text:gsub("\t", "    ")
+			TextBox.CursorPosition += 3
 		end
 		
-		for name, val in lexer.scan(textbox.Text) do
+		for name, val in lexer.scan(TextBox.Text) do
 			local wrote = false
 			
 			for _type, _color in pairs(theme) do
@@ -95,42 +135,51 @@ module.SetTextBox = function(textbox, theme)
 			end
 		end
 		
-		write = write:gsub("\n", "\n<font color=\"rgb("..background..")\">‎</font>") --RichText doesn't allow two empty lines (empty char)
+		write = write:gsub("\n", "\n<font color=\"rgb("..background..")\">‎</font>") --Same thing
 		
 		LexerLabel.Text = write
+		updatescrolls()
+	end
+	
+	local function changed(valname)
+		local pass = true
+		local exceptions = {
+			"Text",
+			"Size",
+			"Position"
+		}
 		
-		if LinesLabel then
-			LinesLabel.Text = ""
-			
-			for i = 1, LexerLabel.TextBounds.Y / LexerLabel.TextSize do
-				LinesLabel.Text = LinesLabel.Text..tostring(i)
-				
-				if i ~= LexerLabel.TextBounds.Y / LexerLabel.TextSize then
-					LinesLabel.Text = LinesLabel.Text.."\n"
-				end
+		for i, exception in ipairs(exceptions) do
+			if valname == exception then
+				pass = false
 			end
 		end
 		
-		LexerScroll.CanvasSize = UDim2.new(LineCountScale, textbox.TextBounds.X + LineCountOffset + TextToCounterGapOffset, 0, textbox.TextBounds.Y)
-
-		if LexerScroll.CanvasSize.X.Offset ~= lastxsize then
-			LexerScroll.CanvasPosition = Vector2.new(LexerScroll.CanvasSize.X.Offset, LexerScroll.CanvasPosition.Y)
+		if pass then
+			pcall(function() --If object doesn't have a variable that TextBox has it will give a error and we don't want that
+				LexerScroll[valname] = TextBox[valname] --LexerScroll["Size"] is the same as LexerScroll.Size
+			end)
+			
+			pcall(function()
+				LineCounterHolder[valname] = TextBox[valname]
+			end)
+			
+			pcall(function()
+				LexerLabel[valname] = TextBox[valname]
+			end)
+			
+			pcall(function()
+				LinesLabel[valname] = TextBox[valname] 
+			end)
 		end
-		
-		if LexerScroll.CanvasSize.Y.Offset ~= lastysize then
-			LexerScroll.CanvasPosition = Vector2.new(LexerScroll.CanvasPosition.X, LexerScroll.CanvasSize.Y.Offset)
-		end
-		
-		lastxsize = LexerScroll.CanvasSize.X.Offset
-		lastysize = LexerScroll.CanvasSize.Y.Offset
 	end
-
-	local write = ""
-	local bg = background:split(",")
 	
 	highlight()
 	
-	textbox:GetPropertyChangedSignal("Text"):Connect(highlight)
+	TextBox:GetPropertyChangedSignal("Text"):Connect(highlight)
+	TextBox.Changed:Connect(changed) --When font size changes etc.
+	
+	LexerScroll:GetPropertyChangedSignal("CanvasPosition"):Connect(updatescrolls)
 end
 
 return module
